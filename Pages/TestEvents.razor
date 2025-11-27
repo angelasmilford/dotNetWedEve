@@ -1,0 +1,14 @@
+@page "/test-events"
+
+<h3>Minimal Event Test</h3>
+
+<button class="btn btn-primary" @onclick="OnTestClick">Click Me</button>
+<span>@message</span>
+
+@code {
+    private string message = "";
+    private void OnTestClick()
+    {
+        message = "Button clicked!";
+    }
+}
