@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("dotNetWedEve")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+986f45edc6bb8ae62e32bb0a720aa9f7b7501bbe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d074b3208d4aeafb1885c257086cb9c3780d276")]
 [assembly: System.Reflection.AssemblyProductAttribute("dotNetWedEve")]
 [assembly: System.Reflection.AssemblyTitleAttribute("dotNetWedEve")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
