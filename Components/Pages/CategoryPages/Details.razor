@@ -20,7 +20,12 @@
             <dt class="col-sm-2">Name</dt>
             <dd class="col-sm-10">@category.Name</dd>
             <dt class="col-sm-2">Color</dt>
-            <dd class="col-sm-10">@category.Color</dd>
+            <dd class="col-sm-10">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <div style="width:1.25rem; height:1.25rem; border:1px solid #ccc; background:@category.Color"></div>
+                    <div>@category.Color</div>
+                </div>
+            </dd>
         </dl>
         <div>
             <a href="@($"/categories/edit?id={category.Id}")">Edit</a> |

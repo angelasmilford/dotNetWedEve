@@ -29,7 +29,16 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="color" class="form-label">Color:</label>
-                    <InputText id="color" @bind-Value="Category.Color" class="form-control" />
+                    <div class="d-flex align-items-center">
+                        <!-- native color picker bound to the Category.Color string (e.g. #rrggbb) -->
+                        <input id="color" type="color" @bind="Category.Color" class="form-control form-control-color" style="width:3rem;height:2.25rem;padding:0;border:1px solid #ced4da;border-radius:0.25rem;" />
+
+                        <!-- text input so users can edit/paste hex values and see the value directly -->
+                        <InputText id="colorText" @bind-Value="Category.Color" class="form-control ms-2" />
+
+                        <!-- small swatch preview that updates as Category.Color changes -->
+                        <span class="ms-2" aria-hidden="true" style="display:inline-block;width:1.5rem;height:1.5rem;border:1px solid #ccc;background:@Category.Color;"></span>
+                    </div>
                     <ValidationMessage For="() => Category.Color" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
