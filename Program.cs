@@ -9,8 +9,13 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<Model.SimpleAuthService>();
-builder.Services.AddSqlite<dotNetWedEveContext>("Data Source=dotNetWedEve.db");
+builder.Services.AddDbContextFactory<dotNetWedEveContext>(options =>
+    options.UseSqlite("Data Source=dotNetWedEve.db"));
 builder.Services.AddQuickGridEntityFrameworkAdapter();
+
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
@@ -29,5 +34,7 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+
 
 app.Run();

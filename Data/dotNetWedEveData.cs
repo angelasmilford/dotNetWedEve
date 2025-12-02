@@ -8,4 +8,6 @@ public class dotNetWedEveContext : DbContext
     {
     }
 
+    public DbSet<dotNetWedEve.Category> Category { get; set; } = default!;
+
 }
