@@ -8,6 +8,7 @@ namespace dotNetWedEve
 
     public class Transaction
     {
+        public int Id { get; set; }
         public required string Name { get; set; }
         public required decimal Amount { get; set; }
         public required Category Category { get; set; }
