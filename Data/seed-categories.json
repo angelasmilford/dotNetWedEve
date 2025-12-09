@@ -1,0 +1,7 @@
+[
+  { "Id": 1, "Name": "Income", "Color": "#4CAF50" },
+  { "Id": 2, "Name": "Housing", "Color": "#2196F3" },
+  { "Id": 3, "Name": "Food", "Color": "#FF9800" },
+  { "Id": 4, "Name": "Transportation", "Color": "#9C27B0" },
+  { "Id": 5, "Name": "Utilities", "Color": "#00BCD4" }
+]

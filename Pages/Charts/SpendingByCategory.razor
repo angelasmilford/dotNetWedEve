@@ -1,0 +1,62 @@
+@page "/charts/spending-by-category"
+@using Microsoft.EntityFrameworkCore
+@using dotNetWedEve.Data
+@inject IDbContextFactory<dotNetWedEveContext> DbFactory
+@inject IJSRuntime JS
+
+<h5>Spending By Category</h5>
+
+<div class="chart-container">
+    <canvas id="categoryChart"></canvas>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        using var db = await DbFactory.CreateDbContextAsync();
+
+        var categories = await db.Categories.ToListAsync();
+        var transactions = await db.Transactions
+            .Where(t => t.Type == TransactionType.Expense)
+            .ToListAsync();
+
+        if (!transactions.Any()) return;
+
+        // Group transactions by category
+        var grouped = categories
+            .Select(c => new 
+            { 
+                c.Name, 
+                Sum = (double)transactions
+                        .Where(t => t.CategoryId == c.Id)
+                        .Sum(t => t.Amount) 
+            })
+            .Where(g => g.Sum > 0)
+            .ToList();
+
+        var labels = grouped.Select(g => g.Name).ToArray();
+        var values = grouped.Select(g => g.Sum).ToArray();
+
+        // ✅ Proper C# array syntax for backgroundColor
+        var chartData = new
+        {
+            labels,
+            datasets = new[]
+            {
+                new
+                {
+                    label = "Expenses by Category",
+                    data = values,
+                    backgroundColor = new string[] { "#FF6384","#36A2EB","#FFCE56","#4BC0C0","#9966FF" }
+                }
+            }
+        };
+
+        // Small delay to ensure JS is loaded
+        await Task.Delay(50);
+
+        await JS.InvokeVoidAsync("renderChart", "categoryChart", "pie", chartData);
+    }
+}
