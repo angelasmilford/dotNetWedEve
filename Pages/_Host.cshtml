@@ -13,9 +13,10 @@
     <link href="css/site.css" rel="stylesheet" />
     <link href="dotNetWedEve.styles.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="favicon.png"/>
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
+
 <body>
+    <!-- CORRECT: Only one App component and ServerPrerendered is good -->
     <component type="typeof(App)" render-mode="ServerPrerendered" />
 
     <div id="blazor-error-ui">
@@ -29,6 +30,11 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.server.js"></script>
+    <!-- ⚠ IMPORTANT: Load Chart.js BEFORE your charts.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="_framework/blazor.server.js"></script>
+<script src="js/charts.js"></script>
+
+
 </body>
 </html>
