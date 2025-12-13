@@ -13,9 +13,10 @@
     <a href="transactions/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Transaction">
+<QuickGrid Class="table" Items="context.Transaction.Include(t => t.Category)">
     <PropertyColumn Property="transaction => transaction.Name" />
     <PropertyColumn Property="transaction => transaction.Amount" />
+    <PropertyColumn Property="transaction => transaction.Category.Name" Title="Category" />
     <PropertyColumn Property="transaction => transaction.Type" />
     <PropertyColumn Property="transaction => transaction.Date" />
     <PropertyColumn Property="transaction => transaction.Notes" />

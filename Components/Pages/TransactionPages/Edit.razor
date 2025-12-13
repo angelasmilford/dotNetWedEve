@@ -1,5 +1,8 @@
 @page "/transactions/edit"
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
 @using dotNetWedEve
 @inject IDbContextFactory<dotNetWedEveContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -52,6 +55,16 @@ else
                     <InputText id="notes" @bind-Value="Transaction.Notes" class="form-control" />
                     <ValidationMessage For="() => Transaction.Notes" class="text-danger" />
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Category:</label>
+                    <InputSelect @bind-Value="SelectedCategoryId" class="form-select">
+                        <option value="">-- Select category --</option>
+                        @foreach (var c in Categories)
+                        {
+                            <option value="@c.Id">@c.Name</option>
+                        }
+                    </InputSelect>
+                </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>
@@ -68,15 +81,29 @@ else
 
     private Transaction? Transaction { get; set; }
 
+    // Category UI state
+    private List<Category> Categories { get; set; } = new List<Category>();
+    private int? SelectedCategoryId { get; set; }
+    private bool IsAddingNewCategory { get; set; } = false;
+    private string NewCategoryName { get; set; } = string.Empty;
+    private string NewCategoryColor { get; set; } = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Transaction ??= await context.Transaction.FirstOrDefaultAsync(m => m.Id == Id);
+        Transaction ??= await context.Transaction
+            .Include(t => t.Category)
+            .FirstOrDefaultAsync(m => m.Id == Id);
 
         if (Transaction is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        // Load available categories and set the selected one from the transaction
+        Categories = await context.Category.OrderBy(c => c.Name).ToListAsync();
+        SelectedCategoryId = Transaction.Category?.Id;
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -84,7 +111,38 @@ else
     private async Task UpdateTransaction()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Attach(Transaction!).State = EntityState.Modified;
+
+        // Load the tracked entity from the DB and update its properties to avoid attach-related issues
+        var dbTrans = await context.Transaction.Include(t => t.Category).FirstOrDefaultAsync(t => t.Id == Transaction!.Id);
+        if (dbTrans is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+            return;
+        }
+
+        // Update scalar properties
+        dbTrans.Name = Transaction!.Name;
+        dbTrans.Amount = Transaction.Amount;
+        dbTrans.Type = Transaction.Type;
+        dbTrans.Date = Transaction.Date;
+        dbTrans.Notes = Transaction.Notes;
+
+        // Handle category assignment (new or existing)
+        if (IsAddingNewCategory && !string.IsNullOrWhiteSpace(NewCategoryName))
+        {
+            var newCat = new Category { Name = NewCategoryName.Trim(), Color = NewCategoryColor ?? string.Empty };
+            context.Category.Add(newCat);
+            await context.SaveChangesAsync();
+            dbTrans.Category = newCat;
+        }
+        else if (SelectedCategoryId.HasValue)
+        {
+            var existing = await context.Category.FindAsync(SelectedCategoryId.Value);
+            if (existing != null)
+            {
+                dbTrans.Category = existing;
+            }
+        }
 
         try
         {

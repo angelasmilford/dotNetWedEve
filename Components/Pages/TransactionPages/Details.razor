@@ -25,6 +25,8 @@
             <dd class="col-sm-10">@transaction.Type</dd>
             <dt class="col-sm-2">Date</dt>
             <dd class="col-sm-10">@transaction.Date</dd>
+            <dt class="col-sm-2">Category</dt>
+            <dd class="col-sm-10">@transaction.Category?.Name</dd>
             <dt class="col-sm-2">Notes</dt>
             <dd class="col-sm-10">@transaction.Notes</dd>
         </dl>
@@ -44,7 +46,9 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        transaction = await context.Transaction.FirstOrDefaultAsync(m => m.Id == Id);
+        transaction = await context.Transaction
+            .Include(t => t.Category)
+            .FirstOrDefaultAsync(m => m.Id == Id);
 
         if (transaction is null)
         {
