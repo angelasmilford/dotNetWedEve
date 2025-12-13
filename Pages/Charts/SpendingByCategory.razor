@@ -21,8 +21,8 @@
     
         
         var transactions = await db.Transaction
-            @* .Where(t => t.Type == TransactionType.Expense)
-            .Include(t => t.Category) *@
+            .Where(t => t.Type == TransactionType.Expense)
+            .Include(t => t.Category)
             .ToListAsync();
 
         if (!transactions.Any()) return;
