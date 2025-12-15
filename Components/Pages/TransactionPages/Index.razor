@@ -52,7 +52,13 @@
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     private IQueryable<Transaction> FilteredItems => 
-        context.Transaction.Where(m => m.Name!.ToUpper().Contains(searchText.ToUpper() ?? string.Empty));
+        context.Transaction
+            .Include(t => t.Category)
+            .Where(t => 
+                !string.IsNullOrWhiteSpace(t.Name) &&
+                t.Amount > 0 &&
+                t.Name.ToUpper().Contains(searchText.ToUpper() ?? string.Empty)
+            );
 
 
     GridSort<Transaction> sortByName = GridSort<Transaction>
