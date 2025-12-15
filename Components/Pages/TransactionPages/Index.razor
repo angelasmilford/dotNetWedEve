@@ -13,23 +13,45 @@
     <a href="transactions/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Transaction.Include(t => t.Category)">
-    <PropertyColumn Property="transaction => transaction.Name" />
-    <PropertyColumn Property="transaction => transaction.Amount" />
-    <PropertyColumn Property="transaction => transaction.Category.Name" Title="Category" />
-    <PropertyColumn Property="transaction => transaction.Type" />
-    <PropertyColumn Property="transaction => transaction.Date" />
-    <PropertyColumn Property="transaction => transaction.Notes" />
+<input type="search" @bind="searchText" @bind:event="oninput" placeholder="Search..." class="form-control"/>
 
-    <TemplateColumn Context="transaction">
-        <a href="@($"transactions/edit?id={transaction.Id}")">Edit</a> |
-        <a href="@($"transactions/details?id={transaction.Id}")">Details</a> |
+<QuickGrid Class="table" Items="@FilteredItems.Include(t => t.Category)" Pagination="@pagination">
+    <PropertyColumn Title="Date" Property="@(transaction => transaction.Date)" Sortable="true" IsDefaultSortColumn="true" Format=""/>
+    <TemplateColumn Title="Name" Sortable="true">
+        <a href="@($"transactions/details?id={context.Id}")">@context.Name</a>
+    </TemplateColumn>
+    <TemplateColumn Title="Category" Sortable="true">
+        <a href="@($"categories/details?id={context.Category.Id}")">@context.Category.Name</a>
+    </TemplateColumn>
+    <PropertyColumn Property="@(transaction => transaction.Amount)" Sortable="true" />
+    
+    <TemplateColumn Title="Delete" Context="transaction">
         <a href="@($"transactions/delete?id={transaction.Id}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>
 
+<div class="page-size-chooser">
+    Items per page:
+    <select @bind="@pagination.ItemsPerPage">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>50</option>
+    </select>
+</div>
+
+<Paginator State="@pagination" />
+
 @code {
     private dotNetWedEveContext context = default!;
+    private string searchText = string.Empty;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    private IQueryable<Transaction> FilteredItems => 
+        string.IsNullOrWhiteSpace(searchText) 
+            ? context.Transaction 
+            : context.Transaction.Where(m => m.Name.Contains(searchText));
+
 
     protected override void OnInitialized()
     {
