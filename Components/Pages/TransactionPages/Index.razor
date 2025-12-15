@@ -7,23 +7,26 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<h1>Transactions</h1>
 
 <p>
-    <a href="transactions/create">Create New</a>
+    <a href="transactions/create" style="border: 2px solid currentColor; border-radius: 7px; padding: 4px; float: right">Add New Transaction</a>
 </p>
 
-<input type="search" @bind="searchText" @bind:event="oninput" placeholder="Search..." class="form-control"/>
+<input type="search" @bind="searchText" @bind:event="oninput" placeholder="Search..." class="form-control" style="width:60%"/>
 
 <QuickGrid Class="table" Items="@FilteredItems.Include(t => t.Category)" Pagination="@pagination">
-    <PropertyColumn Title="Date" Property="@(transaction => transaction.Date)" Sortable="true" IsDefaultSortColumn="true" Format="yyyy-MM-dd"/>
+    <PropertyColumn Title="Date" Property="@(transaction => transaction.Date)" Sortable="true" IsDefaultSortColumn="true" Format="MMM dd, yyyy"/>
     <TemplateColumn Title="Name" SortBy="@sortByName">
         <a href="@($"transactions/details?id={context.Id}")">@context.Name</a>
     </TemplateColumn>
     <TemplateColumn Title="Category" SortBy="@sortByCategory">
         <a href="@($"categories/details?id={context.Category.Id}")">@context.Category.Name</a>
     </TemplateColumn>
-    <PropertyColumn Property="@(transaction => transaction.Amount)" Sortable="true" Format="c"/>
+    <TemplateColumn Title="Amount" SortBy="@sortByAmount">
+        <span style="color: @(context.Type == 0 ? "black" : "green")">@context.Amount.ToString("C")</span>
+    </TemplateColumn>
+        
 
     
     <TemplateColumn Title="Delete" Context="transaction">
@@ -56,6 +59,9 @@
         .ByAscending(p => p.Name);
     GridSort<Transaction> sortByCategory = GridSort<Transaction>
         .ByAscending(p => p.Category.Name);
+    GridSort<Transaction> sortByAmount = GridSort<Transaction>
+        .ByAscending(p => (double)p.Amount);
+
 
     protected override void OnInitialized()
     {
