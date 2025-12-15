@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using dotNetWedEve.Data;
+using dotNetWedEve;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +14,11 @@ builder.Services.AddDbContextFactory<dotNetWedEveContext>(options =>
     options.UseSqlite("Data Source=dotNetWedEve.db"));
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Antiforgery is required for enhanced forms/endpoints that include anti-forgery metadata
+builder.Services.AddAntiforgery();
 
 var app = builder.Build();
 
@@ -32,8 +35,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Enable antiforgery middleware so endpoints that carry anti-forgery metadata are handled
+app.UseAntiforgery();
+
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+// app.MapRazorComponents<App>()
+//     .AddInteractiveServerRenderMode();
 
 
 

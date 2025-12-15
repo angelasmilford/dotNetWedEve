@@ -9,5 +9,6 @@ public class dotNetWedEveContext : DbContext
     }
 
     public DbSet<dotNetWedEve.Category> Category { get; set; } = default!;
+    public DbSet<dotNetWedEve.Transaction> Transaction { get; set; } = default!;
 
 }
