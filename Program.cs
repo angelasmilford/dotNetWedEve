@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using dotNetWedEve.Data;
 using dotNetWedEve;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<Model.SimpleAuthService>();
 builder.Services.AddDbContextFactory<dotNetWedEveContext>(options =>
     options.UseSqlite("Data Source=dotNetWedEve.db"));
