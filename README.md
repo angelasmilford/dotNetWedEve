@@ -6,6 +6,7 @@ Members of the team :
 - J Richardson
 - Daniel Gary Jardine
 - David Souza
+- Angela S. Milford
 
 To run this project follow the steps below:
 
